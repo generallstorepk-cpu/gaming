@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXION — Enter The Arena. Become Legend.</title>
+<meta name="description" content="NEXION is a premium esports organization and gaming community — featured titles, pro teams, tournaments, gear, live streams, and news.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NEXION — root tokens
+   ============================================================ */
+:root{
+  --bg:#050816;
+  --bg-secondary:#0F172A;
+  --bg-soft: #0a0f24;
+  --neon-blue:#00E5FF;
+  --neon-purple:#8B5CF6;
+  --neon-pink:#FF2E88;
+  --text-primary:#FFFFFF;
+  --text-secondary:#A0AEC0;
+  --font-display:'Orbitron', sans-serif;
+  --font-body:'Exo 2', sans-serif;
+  --font-accent:'Rajdhani', sans-serif;
+  --glass-bg: rgba(15,23,42,0.55);
+  --glass-bg-soft: rgba(15,23,42,0.35);
+  --glass-border: rgba(255,255,255,0.08);
+  --ease: cubic-bezier(.4,0,.2,1);
+  --container: 1280px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+html,body{ background:var(--bg); color:var(--text-primary); }
+body{
+  font-family:var(--font-body);
+  line-height:1.6;
+  overflow-x:hidden;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input,textarea{ font-family:inherit; background:none; border:none; color:inherit; outline:none; }
+svg{ display:block; }
+
+.sr-only{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap;
+}
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:10000;
+  background:var(--neon-blue); color:#000; padding:.6rem 1rem; font-family:var(--font-accent); font-weight:700;
+}
+.skip-link:focus{ left:1rem; top:1rem; }
+
+:focus-visible{
+  outline:2px solid var(--neon-blue);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+::selection{ background:var(--neon-pink); color:#fff; }
+
+/* scrollbar */
+::-webkit-scrollbar{ width:10px; }
+::-webkit-scrollbar-track{ background:var(--bg); }
+::-webkit-scrollbar-thumb{ background:linear-gradient(var(--neon-blue),var(--neon-purple)); border-radius:10px; }
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* ============================================================
+   Background grid / atmosphere (global)
+   ============================================================ */
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:-2;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.045) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.9), transparent 75%);
+  pointer-events:none;
+}
+
+/* ============================================================
+   Custom cursor
+   ============================================================ */
+@media (pointer:fine){
+  body{ cursor:none; }
+  a,button,input,textarea,.cursor-hover{ cursor:none; }
+}
+.cursor-dot,.cursor-ring{
+  position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
+  border-radius:50%; transform:translate(-50%,-50%);
+  will-change:transform;
+}
+.cursor-dot{
+  width:6px; height:6px; background:var(--neon-blue);
+  box-shadow:0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+.cursor-ring{
+  width:34px; height:34px; border:1.5px solid rgba(0,229,255,0.6);
+  transition:width .25s var(--ease), height .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
+}
+.cursor-ring.is-hover{
+  width:60px; height:60px; border-color:var(--neon-pink);
+  background:rgba(255,46,136,0.08);
+}
+@media (pointer:coarse){ .cursor-dot,.cursor-ring{ display:none; } }
+
+/* ============================================================
+   Scroll progress (HUD bar)
+   ============================================================ */
+.scroll-hud{
+  position:fixed; top:0; left:0; height:3px; width:0%;
+  z-index:9000;
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));
+  box-shadow:0 0 12px var(--neon-blue);
+  transition:width .08s linear;
+}
+
+/* ============================================================
+   Loading screen
+   ============================================================ */
+.loader{
+  position:fixed; inset:0; z-index:99999; background:var(--bg);
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  gap:2rem; transition:opacity .7s var(--ease), visibility .7s var(--ease);
+}
+.loader.is-done{ opacity:0; visibility:hidden; pointer-events:none; }
+.loader::before{
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg, rgba(0,229,255,0.03) 0px, rgba(0,229,255,0.03) 1px, transparent 1px, transparent 3px);
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{ 0%{ background-position:0 0; } 100%{ background-position:0 200px; } }
+.loader-hex{
+  width:96px; height:96px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.loader-hex svg{ width:100%; height:100%; }
+.loader-hex .hex-path{
+  fill:none; stroke:url(#hexGrad); stroke-width:2.5;
+  stroke-dasharray:340; stroke-dashoffset:340;
+  animation:drawHex 1.6s var(--ease) forwards, spinHex 6s linear infinite;
+  filter:drop-shadow(0 0 8px rgba(0,229,255,0.7));
+}
+@keyframes drawHex{ to{ stroke-dashoffset:0; } }
+@keyframes spinHex{ to{ transform:rotate(360deg); } }
+.loader-logo{
+  font-family:var(--font-display); font-weight:900; font-size:1.4rem;
+  position:absolute; letter-spacing:.08em;
+}
+.loader-text{
+  font-family:var(--font-accent); letter-spacing:.3em; text-transform:uppercase;
+  font-size:.78rem; color:var(--text-secondary);
+}
+.loader-text span{ color:var(--neon-blue); }
+.loader-bar-track{
+  width:260px; height:4px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden;
+  position:relative;
+}
+.loader-bar-fill{
+  height:100%; width:0%; background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));
+  box-shadow:0 0 10px var(--neon-blue);
+  transition:width .25s var(--ease);
+}
+.loader-pct{ font-family:var(--font-accent); font-size:.78rem; color:var(--text-secondary); letter-spacing:.1em; }
+.loader-pct b{ color:var(--text-primary); }
+
+/* ============================================================
+   Utility / layout
+   ============================================================ */
+.container{ max-width:var(--container); margin:0 auto; padding:0 1.5rem; }
+.section{ position:relative; padding:7rem 0; }
+@media (max-width:768px){ .section{ padding:4.5rem 0; } }
+.section--alt{ background:linear-gradient(180deg, transparent, var(--bg-secondary) 12%, var(--bg-secondary) 88%, transparent); }
+
+.eyebrow{
+  font-family:var(--font-accent); text-transform:uppercase; letter-spacing:.35em;
+  font-size:.72rem; color:var(--neon-blue); display:inline-flex; align-items:center; gap:.6rem;
+  margin-bottom:1rem; font-weight:600;
+}
+.eyebrow::before{ content:''; width:22px; height:2px; background:var(--neon-blue); box-shadow:0 0 8px var(--neon-blue); }
+
+.section-head{ max-width:680px; margin-bottom:3.2rem; }
+.section-head.center{ margin-inline:auto; text-align:center; }
+.section-title{
+  font-family:var(--font-display); font-weight:800; text-transform:uppercase;
+  font-size:clamp(1.8rem, 1rem + 3vw, 3rem); line-height:1.15; letter-spacing:.01em;
+}
+.section-title .accent{
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.section-sub{ color:var(--text-secondary); font-size:1.02rem; margin-top:1rem; font-weight:300; }
+
+.glass{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  border-radius:18px;
+}
+
+.btn{
+  font-family:var(--font-accent); font-weight:700; text-transform:uppercase; letter-spacing:.12em;
+  font-size:.86rem; padding:.95rem 2rem; border-radius:8px; display:inline-flex; align-items:center; gap:.6rem;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease), color .35s var(--ease);
+  position:relative; isolation:isolate; white-space:nowrap;
+}
+.btn-primary{
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple));
+  color:#04060f; box-shadow:0 0 0 rgba(0,229,255,0);
+}
+.btn-primary:hover{ transform:translateY(-3px); box-shadow:0 10px 30px -8px rgba(0,229,255,0.55), 0 0 24px rgba(139,92,246,0.4); }
+.btn-ghost{
+  background:transparent; color:var(--text-primary); border:1px solid rgba(255,255,255,0.18);
+}
+.btn-ghost:hover{ border-color:var(--neon-pink); color:var(--neon-pink); box-shadow:0 0 22px rgba(255,46,136,0.25); transform:translateY(-3px); }
+.btn svg{ width:16px; height:16px; }
+
+.tag{
+  font-family:var(--font-accent); font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  font-size:.68rem; padding:.32rem .7rem; border-radius:5px; border:1px solid rgba(255,255,255,0.15);
+  color:var(--text-secondary);
+}
+
+[data-reveal]{ opacity:0; transform:translateY(36px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+[data-reveal].is-visible{ opacity:1; transform:translateY(0); }
+[data-reveal="left"]{ transform:translateX(-46px); }
+[data-reveal="left"].is-visible{ transform:translateX(0); }
+[data-reveal="right"]{ transform:translateX(46px); }
+[data-reveal="right"].is-visible{ transform:translateX(0); }
+[data-reveal="scale"]{ transform:scale(.92); }
+[data-reveal="scale"].is-visible{ transform:scale(1); }
+
+.img-frame{
+  position:relative; overflow:hidden; border-radius:16px;
+  background:linear-gradient(135deg, rgba(0,229,255,0.18), rgba(139,92,246,0.22), rgba(255,46,136,0.18));
+}
+.img-frame img{ width:100%; height:100%; object-fit:cover; transition:opacity .6s ease, transform .6s var(--ease); }
+.img-frame::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, transparent 50%, rgba(5,8,22,0.75) 100%);
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.site-header{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  padding:1.3rem 0; transition:padding .35s var(--ease), background .35s var(--ease), border-color .35s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.site-header.scrolled{
+  padding:.8rem 0; background:rgba(5,8,22,0.78); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom-color:rgba(255,255,255,0.08);
+}
+.nav-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.brand{ display:flex; align-items:center; gap:.6rem; font-family:var(--font-display); font-weight:900; font-size:1.25rem; letter-spacing:.05em; }
+.brand-mark{ width:30px; height:30px; }
+.brand-mark .hex{ fill:none; stroke:var(--neon-blue); stroke-width:6; filter:drop-shadow(0 0 6px rgba(0,229,255,0.7)); }
+.brand-mark .core{ fill:var(--neon-pink); filter:drop-shadow(0 0 6px rgba(255,46,136,0.8)); }
+.brand small{ color:var(--neon-blue); }
+
+.nav-links{ display:flex; align-items:center; gap:2.1rem; }
+.nav-links a{
+  font-family:var(--font-accent); font-weight:600; letter-spacing:.07em; text-transform:uppercase; font-size:.84rem;
+  color:var(--text-secondary); position:relative; padding-bottom:.4rem;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; bottom:0; height:2px; width:0; background:linear-gradient(90deg,var(--neon-blue),var(--neon-pink));
+  transition:width .3s var(--ease);
+}
+.nav-links a:hover{ color:var(--text-primary); }
+.nav-links a:hover::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:1rem; }
+.nav-toggle{ display:none; flex-direction:column; gap:5px; padding:.4rem; }
+.nav-toggle span{ width:24px; height:2px; background:var(--text-primary); transition:transform .3s var(--ease), opacity .3s var(--ease); }
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed; top:0; right:0; height:100vh; width:min(78vw,320px);
+    background:rgba(8,12,28,0.97); backdrop-filter:blur(20px);
+    flex-direction:column; justify-content:center; align-items:flex-start; gap:2rem; padding:2rem 2.4rem;
+    transform:translateX(100%); transition:transform .45s var(--ease); border-left:1px solid var(--glass-border);
+  }
+  .nav-links.open{ transform:translateX(0); }
+  .nav-toggle{ display:flex; }
+  .nav-cta .btn-ghost{ display:none; }
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero{
+  position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden;
+  padding-top:6rem;
+}
+.hero-bg{ position:absolute; inset:0; z-index:0; }
+.hero-bg img{ width:100%; height:100%; object-fit:cover; opacity:.55; }
+.hero-bg::after{
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 18% 25%, rgba(139,92,246,0.30), transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(0,229,255,0.22), transparent 50%),
+    linear-gradient(180deg, rgba(5,8,22,0.55) 0%, rgba(5,8,22,0.78) 55%, var(--bg) 100%);
+}
+#particles{ position:absolute; inset:0; z-index:1; }
+.hero-content{ position:relative; z-index:2; width:100%; }
+.hero-grid{ display:grid; grid-template-columns:1fr; gap:2.5rem; }
+.hero-eyebrow{
+  font-family:var(--font-accent); letter-spacing:.4em; text-transform:uppercase; font-size:.78rem;
+  color:var(--neon-blue); margin-bottom:1.3rem; display:flex; align-items:center; gap:.7rem;
+}
+.pulse-dot{ width:8px; height:8px; border-radius:50%; background:var(--neon-pink); box-shadow:0 0 0 0 rgba(255,46,136,.6); animation:pulseDot 1.8s infinite; }
+@keyframes pulseDot{ 0%{ box-shadow:0 0 0 0 rgba(255,46,136,.55);} 70%{ box-shadow:0 0 0 11px rgba(255,46,136,0);} 100%{ box-shadow:0 0 0 0 rgba(255,46,136,0);} }
+
+.hero-title{
+  font-family:var(--font-display); font-weight:900; text-transform:uppercase;
+  font-size:clamp(2.6rem, 1.4rem + 6vw, 5.6rem); line-height:1.03; letter-spacing:.01em;
+  max-width:980px;
+}
+.hero-title .reveal-line{ display:block; overflow:hidden; }
+.hero-title .reveal-line span{
+  display:inline-block; transform:translateY(110%); animation:lineUp .9s var(--ease) forwards;
+}
+.hero-title .line2 span{ animation-delay:.12s; }
+.hero-title .gradient-text{
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple) 45%, var(--neon-pink));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0 40px rgba(0,229,255,0.25);
+}
+@keyframes lineUp{ to{ transform:translateY(0); } }
+
+.hero-desc{
+  font-size:1.08rem; color:var(--text-secondary); max-width:540px; margin-top:1.6rem;
+  font-weight:300; opacity:0; animation:fadeUp .9s var(--ease) .65s forwards;
+}
+.hero-actions{ display:flex; gap:1rem; margin-top:2.3rem; flex-wrap:wrap; opacity:0; animation:fadeUp .9s var(--ease) .8s forwards; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:translateY(0); } }
+
+.hero-stats{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:4rem;
+  opacity:0; animation:fadeUp .9s var(--ease) 1s forwards;
+}
+.stat-chip{
+  padding:1.1rem 1rem; text-align:left; transition:transform .4s var(--ease), border-color .4s var(--ease);
+}
+.stat-chip:hover{ transform:translateY(-6px); border-color:rgba(0,229,255,0.4); }
+.stat-num{ font-family:var(--font-display); font-weight:800; font-size:1.7rem; color:var(--text-primary); }
+.stat-num .suffix{ color:var(--neon-blue); }
+.stat-label{ font-family:var(--font-accent); letter-spacing:.05em; font-size:.74rem; color:var(--text-secondary); text-transform:uppercase; margin-top:.3rem; }
+
+.scroll-cue{
+  position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%); z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  font-family:var(--font-accent); letter-spacing:.3em; font-size:.65rem; color:var(--text-secondary); text-transform:uppercase;
+}
+.scroll-cue .line{ width:1px; height:34px; background:linear-gradient(var(--neon-blue), transparent); position:relative; overflow:hidden; }
+.scroll-cue .line::after{ content:''; position:absolute; top:-100%; left:0; width:100%; height:100%; background:var(--neon-blue); animation:scrollLine 1.8s infinite; }
+@keyframes scrollLine{ to{ top:100%; } }
+
+@media (max-width:768px){
+  .hero-stats{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* Typewriter */
+.typewriter-wrap{ display:inline-flex; align-items:center; gap:.4rem; height:1.5em; overflow:hidden; margin-top:1rem; opacity:0; animation:fadeUp .9s var(--ease) .55s forwards; }
+.typewriter-prefix{ color:var(--text-secondary); font-family:var(--font-accent); font-size:.92rem; font-weight:500; letter-spacing:.06em; }
+.typewriter-text{ font-family:var(--font-accent); font-size:.92rem; font-weight:700; color:var(--neon-pink); letter-spacing:.06em; }
+.typewriter-cursor{ width:2px; height:1em; background:var(--neon-blue); display:inline-block; animation:blink .75s step-end infinite; margin-left:1px; }
+@keyframes blink{ 0%,100%{ opacity:1; } 50%{ opacity:0; } }
+
+/* Floating neon orbs */
+.neon-orbs{ position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
+.neon-orb{
+  position:absolute; border-radius:50%;
+  filter:blur(72px); opacity:0; animation:orbFloat var(--dur,12s) var(--delay,0s) ease-in-out infinite alternate;
+}
+.neon-orb:nth-child(1){ width:420px; height:420px; background:rgba(139,92,246,0.22); top:-10%; left:-8%; --dur:14s; --delay:0s; }
+.neon-orb:nth-child(2){ width:300px; height:300px; background:rgba(0,229,255,0.18); top:30%; right:-6%; --dur:11s; --delay:-4s; }
+.neon-orb:nth-child(3){ width:260px; height:260px; background:rgba(255,46,136,0.16); bottom:5%; left:40%; --dur:9s; --delay:-2s; }
+@keyframes orbFloat{ 0%{ opacity:0; transform:translate(0,0) scale(1); } 10%{ opacity:1; } 90%{ opacity:1; } 100%{ opacity:0; transform:translate(24px,-18px) scale(1.08); } }
+
+/* RGB scan-line glitch (hero section only) */
+.hero::before{
+  content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.018) 3px, rgba(0,229,255,0.018) 4px);
+  animation:scanMove 8s linear infinite;
+}
+@keyframes scanMove{ 0%{ background-position:0 0;} 100%{ background-position:0 200px;} }
+
+/* Neon divider */
+.neon-divider{ position:relative; text-align:center; margin:0; overflow:hidden; height:1px; }
+.neon-divider::before{ content:''; display:block; height:1px; background:linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), var(--neon-pink), transparent); opacity:.45; }
+.neon-divider::after{ content:'◆'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--bg); padding:0 1rem; color:var(--neon-purple); font-size:.6rem; }
+
+/* Floating badge — hero corner */
+.hero-floater{
+  position:absolute; right:2rem; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:1rem; z-index:3; pointer-events:none;
+}
+@media (max-width:1100px){ .hero-floater{ display:none; } }
+.floater-chip{
+  padding:.9rem 1.1rem; display:flex; align-items:center; gap:.7rem;
+  animation:floatChip 6s ease-in-out infinite;
+}
+.floater-chip:nth-child(2){ animation-delay:-2s; }
+.floater-chip:nth-child(3){ animation-delay:-4s; }
+@keyframes floatChip{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-9px); } }
+.floater-icon{ width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+.floater-chip h5{ font-family:var(--font-display); font-size:.78rem; text-transform:uppercase; }
+.floater-chip span{ font-size:.7rem; color:var(--text-secondary); }
+
+/* ============================================================
+   Cards: Games
+   ============================================================ */
+.games-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem; }
+@media (max-width:980px){ .games-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px){ .games-grid{ grid-template-columns:1fr; } }
+
+.game-card{
+  position:relative; border-radius:18px; overflow:hidden; aspect-ratio:3/4;
+  border:1px solid var(--glass-border); transition:transform .5s var(--ease), box-shadow .5s var(--ease);
+}
+.game-card:hover{ transform:translateY(-10px); box-shadow:0 20px 50px -20px rgba(0,229,255,0.35); }
+.game-card img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .7s var(--ease), filter .5s ease; }
+.game-card:hover img{ transform:scale(1.08); }
+.game-card-overlay{
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:1.4rem;
+  background:linear-gradient(180deg, transparent 30%, rgba(5,8,22,0.92) 100%);
+}
+.game-card-genre{ position:absolute; top:1rem; left:1rem; }
+.game-rating{ display:flex; align-items:center; gap:.3rem; margin-bottom:.5rem; }
+.game-rating svg{ width:14px; height:14px; fill:var(--neon-blue); }
+.game-rating span{ font-family:var(--font-accent); font-size:.8rem; color:var(--text-secondary); margin-left:.3rem; }
+.game-card h3{ font-family:var(--font-display); font-size:1.25rem; text-transform:uppercase; font-weight:700; }
+.game-card p{ color:var(--text-secondary); font-size:.86rem; margin-top:.4rem; max-height:0; overflow:hidden; opacity:0; transition:max-height .4s var(--ease), opacity .4s var(--ease), margin .4s var(--ease); }
+.game-card:hover p{ max-height:60px; opacity:1; margin-top:.6rem; }
+.game-card-cta{
+  display:flex; align-items:center; gap:.4rem; margin-top:.8rem; font-family:var(--font-accent); font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; font-size:.76rem; color:var(--neon-blue);
+  transform:translateY(8px); opacity:0; transition:transform .4s var(--ease), opacity .4s var(--ease);
+}
+.game-card:hover .game-card-cta{ transform:translateY(0); opacity:1; }
+
+/* ============================================================
+   Teams
+   ============================================================ */
+.teams-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
+@media (max-width:980px){ .teams-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:560px){ .teams-grid{ grid-template-columns:1fr; } }
+.team-card{
+  padding:1.6rem; text-align:center; position:relative; overflow:hidden;
+  transition:transform .45s var(--ease), border-color .45s var(--ease);
+}
+.team-card:hover{ transform:translateY(-8px); border-color:rgba(139,92,246,0.5); }
+.team-card::before{
+  content:''; position:absolute; top:-40%; left:-40%; width:180%; height:180%;
+  background:radial-gradient(circle, rgba(139,92,246,0.18), transparent 60%);
+  opacity:0; transition:opacity .5s ease;
+}
+.team-card:hover::before{ opacity:1; }
+.team-avatar{
+  width:84px; height:84px; border-radius:50%; margin:0 auto 1rem; overflow:hidden; position:relative;
+  border:2px solid rgba(0,229,255,0.4); box-shadow:0 0 20px rgba(0,229,255,0.25);
+}
+.team-avatar img{ width:100%; height:100%; object-fit:cover; }
+.team-card h3{ font-family:var(--font-display); font-size:1.05rem; text-transform:uppercase; }
+.team-card .role{ font-family:var(--font-accent); color:var(--neon-pink); font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; margin-top:.3rem; }
+.team-card .game{ color:var(--text-secondary); font-size:.82rem; margin-top:.7rem; }
+.team-stats{ display:flex; justify-content:center; gap:1.1rem; margin-top:.9rem; }
+.team-stats div{ font-family:var(--font-accent); font-size:.76rem; color:var(--text-secondary); }
+.team-stats b{ display:block; color:var(--text-primary); font-size:1rem; }
+
+/* ============================================================
+   Tournaments
+   ============================================================ */
+.tourney-top{ display:flex; flex-wrap:wrap; gap:1.2rem; justify-content:space-between; align-items:flex-end; margin-bottom:3rem; }
+.prize-pool{ display:flex; gap:1.4rem; }
+.prize-pool .item{ text-align:center; }
+.prize-pool .item b{ display:block; font-family:var(--font-display); font-size:1.5rem; color:var(--neon-blue); }
+.prize-pool .item span{ font-family:var(--font-accent); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); }
+
+.bracket{ display:flex; gap:2.6rem; overflow-x:auto; padding-bottom:1rem; scroll-snap-type:x proximate; }
+.bracket-round{ display:flex; flex-direction:column; justify-content:space-around; gap:1.6rem; min-width:230px; flex-shrink:0; scroll-snap-align:start; }
+.bracket-round-title{ font-family:var(--font-accent); text-transform:uppercase; letter-spacing:.12em; font-size:.74rem; color:var(--text-secondary); text-align:center; margin-bottom:.4rem; }
+.match{
+  position:relative; padding:.8rem; border-radius:10px;
+}
+.match-team{ display:flex; align-items:center; justify-content:space-between; padding:.5rem .6rem; border-radius:6px; font-family:var(--font-accent); font-size:.86rem; }
+.match-team + .match-team{ margin-top:.35rem; }
+.match-team.winner{ background:rgba(0,229,255,0.1); color:var(--neon-blue); font-weight:700; }
+.match-team .score{ color:var(--text-secondary); }
+.match-team.winner .score{ color:var(--neon-blue); }
+.match::after{
+  content:''; position:absolute; right:-1.3rem; top:50%; width:1.3rem; height:1px; background:rgba(255,255,255,0.18);
+}
+.bracket-round:last-child .match::after{ display:none; }
+.match-meta{ text-align:center; font-size:.68rem; color:var(--text-secondary); margin-top:.4rem; font-family:var(--font-accent); letter-spacing:.05em; }
+
+.schedule-list{ margin-top:3rem; display:grid; gap:.8rem; }
+.schedule-item{
+  display:grid; grid-template-columns:90px 1fr auto; align-items:center; gap:1.2rem; padding:1rem 1.3rem;
+  transition:border-color .3s ease, transform .3s ease;
+}
+.schedule-item:hover{ border-color:rgba(255,46,136,0.4); transform:translateX(4px); }
+.schedule-date{ font-family:var(--font-display); font-size:.95rem; color:var(--neon-pink); text-align:center; line-height:1.2; }
+.schedule-date small{ display:block; color:var(--text-secondary); font-family:var(--font-accent); font-size:.65rem; letter-spacing:.1em; }
+.schedule-match{ font-family:var(--font-accent); font-weight:600; letter-spacing:.02em; }
+.schedule-match span{ color:var(--text-secondary); font-weight:400; }
+@media (max-width:600px){ .schedule-item{ grid-template-columns:70px 1fr; } .schedule-item .tag{ display:none; } }
+
+/* ============================================================
+   Products
+   ============================================================ */
+.products-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
+@media (max-width:980px){ .products-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:560px){ .products-grid{ grid-template-columns:1fr; } }
+.product-card{ position:relative; padding:1.2rem; transition:transform .4s var(--ease), border-color .4s var(--ease); }
+.product-card:hover{ transform:translateY(-8px); border-color:rgba(0,229,255,0.45); box-shadow:0 18px 40px -18px rgba(0,229,255,0.3); }
+.product-badge{ position:absolute; top:1rem; left:1rem; z-index:2; }
+.product-badge.new{ background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple)); color:#04060f; border:none; }
+.product-badge.hot{ background:var(--neon-pink); color:#fff; border:none; }
+.product-img{ aspect-ratio:1/1; border-radius:12px; margin-bottom:1rem; }
+.product-cat{ font-family:var(--font-accent); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--neon-blue); }
+.product-card h3{ font-family:var(--font-display); font-size:1.02rem; margin-top:.4rem; text-transform:uppercase; }
+.product-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:.9rem; }
+.product-price{ font-family:var(--font-accent); font-weight:700; font-size:1.15rem; }
+.product-price small{ color:var(--text-secondary); font-weight:500; text-decoration:line-through; margin-right:.4rem; font-size:.85rem; }
+.icon-btn{
+  width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,0.16); display:flex; align-items:center; justify-content:center;
+  transition:background .3s ease, border-color .3s ease, transform .3s ease;
+}
+.icon-btn svg{ width:16px; height:16px; }
+.icon-btn:hover{ background:var(--neon-pink); border-color:var(--neon-pink); transform:scale(1.1) rotate(8deg); }
+
+/* ============================================================
+   Streams
+   ============================================================ */
+.streams-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+@media (max-width:980px){ .streams-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px){ .streams-grid{ grid-template-columns:1fr; } }
+.stream-card{ border-radius:16px; overflow:hidden; border:1px solid var(--glass-border); transition:transform .4s var(--ease), border-color .4s ease; }
+.stream-card:hover{ transform:translateY(-7px); border-color:rgba(255,46,136,0.4); }
+.stream-thumb{ position:relative; aspect-ratio:16/9; }
+.stream-thumb img{ width:100%; height:100%; object-fit:cover; }
+.live-badge{
+  position:absolute; top:.8rem; left:.8rem; display:flex; align-items:center; gap:.4rem;
+  background:rgba(5,8,22,0.7); padding:.3rem .6rem; border-radius:5px; font-family:var(--font-accent); font-size:.68rem; letter-spacing:.08em; font-weight:700;
+}
+.live-badge .dot{ width:7px; height:7px; border-radius:50%; background:#ff3b3b; box-shadow:0 0 8px #ff3b3b; animation:livePulse 1.4s infinite; }
+@keyframes livePulse{ 0%,100%{ opacity:1;} 50%{ opacity:.3;} }
+.viewer-count{
+  position:absolute; bottom:.8rem; right:.8rem; background:rgba(5,8,22,0.7); padding:.3rem .6rem; border-radius:5px;
+  font-family:var(--font-accent); font-size:.7rem; display:flex; align-items:center; gap:.3rem;
+}
+.stream-play{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .35s ease; background:rgba(5,8,22,0.35);
+}
+.stream-card:hover .stream-play{ opacity:1; }
+.stream-play span{
+  width:54px; height:54px; border-radius:50%; background:rgba(0,229,255,0.18); border:1px solid var(--neon-blue);
+  display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px);
+}
+.stream-play svg{ width:18px; height:18px; fill:var(--neon-blue); }
+.stream-info{ padding:1rem 1.1rem; display:flex; gap:.8rem; align-items:flex-start; }
+.streamer-avatar{ width:38px; height:38px; border-radius:50%; overflow:hidden; flex-shrink:0; border:1px solid rgba(0,229,255,0.4); }
+.streamer-avatar img{ width:100%; height:100%; object-fit:cover; }
+.stream-info h4{ font-family:var(--font-display); font-size:.92rem; text-transform:uppercase; }
+.stream-info p{ font-size:.78rem; color:var(--text-secondary); margin-top:.2rem; }
+
+/* ============================================================
+   Community
+   ============================================================ */
+.community-wrap{ display:grid; grid-template-columns:1.05fr .95fr; gap:2.6rem; align-items:center; }
+@media (max-width:920px){ .community-wrap{ grid-template-columns:1fr; } }
+.discord-panel{ overflow:hidden; }
+.discord-bar{ display:flex; align-items:center; gap:.7rem; padding:1rem 1.3rem; border-bottom:1px solid var(--glass-border); }
+.discord-bar .server-icon{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:.85rem; }
+.discord-bar h4{ font-family:var(--font-display); font-size:.92rem; }
+.discord-bar span{ font-size:.74rem; color:var(--text-secondary); display:flex; align-items:center; gap:.3rem; }
+.discord-body{ display:grid; grid-template-columns:120px 1fr; min-height:280px; }
+.discord-channels{ border-right:1px solid var(--glass-border); padding:1rem .7rem; }
+.discord-channels .group{ font-family:var(--font-accent); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-secondary); margin:.8rem 0 .4rem; }
+.discord-channels .chan{ font-size:.78rem; color:var(--text-secondary); padding:.35rem .4rem; border-radius:5px; display:flex; align-items:center; gap:.3rem; }
+.discord-channels .chan.active{ background:rgba(0,229,255,0.1); color:var(--neon-blue); }
+.discord-feed{ padding:1.1rem 1.3rem; display:flex; flex-direction:column; gap:.9rem; }
+.feed-msg{ display:flex; gap:.7rem; }
+.feed-msg .av{ width:30px; height:30px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+.feed-msg .av img{ width:100%; height:100%; object-fit:cover; }
+.feed-msg b{ font-size:.82rem; }
+.feed-msg b.t1{ color:var(--neon-blue); } .feed-msg b.t2{ color:var(--neon-pink); } .feed-msg b.t3{ color:var(--neon-purple); }
+.feed-msg p{ font-size:.8rem; color:var(--text-secondary); margin-top:.15rem; }
+.feed-msg time{ font-size:.65rem; color:var(--text-secondary); opacity:.6; margin-left:.4rem; }
+
+.community-stats{ display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-top:2rem; }
+.community-stats .glass{ padding:1.2rem; }
+.community-stats b{ display:block; font-family:var(--font-display); font-size:1.6rem; color:var(--text-primary); }
+.community-stats span{ font-family:var(--font-accent); font-size:.72rem; letter-spacing:.06em; color:var(--text-secondary); text-transform:uppercase; }
+.avatar-stack{ display:flex; margin-top:1.6rem; align-items:center; }
+.avatar-stack .av{ width:42px; height:42px; border-radius:50%; border:2px solid var(--bg); margin-left:-12px; overflow:hidden; }
+.avatar-stack .av:first-child{ margin-left:0; }
+.avatar-stack .av img{ width:100%; height:100%; object-fit:cover; }
+.avatar-stack .more{ width:42px; height:42px; border-radius:50%; background:var(--bg-secondary); border:2px solid var(--bg); margin-left:-12px; display:flex; align-items:center; justify-content:center; font-family:var(--font-accent); font-size:.68rem; color:var(--neon-blue); }
+
+/* ============================================================
+   News
+   ============================================================ */
+.news-grid{ display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1.6rem; }
+@media (max-width:980px){ .news-grid{ grid-template-columns:1fr 1fr; } .news-grid > *:first-child{ grid-column:1/-1; } }
+@media (max-width:600px){ .news-grid{ grid-template-columns:1fr; } }
+.news-card{ overflow:hidden; display:flex; flex-direction:column; transition:transform .4s var(--ease), border-color .4s ease; }
+.news-card:hover{ transform:translateY(-6px); border-color:rgba(0,229,255,0.35); }
+.news-card .img-frame{ aspect-ratio:16/10; border-radius:18px 18px 0 0; }
+.news-card.featured .img-frame{ aspect-ratio:16/9; }
+.news-body{ padding:1.3rem; display:flex; flex-direction:column; gap:.6rem; flex:1; }
+.news-meta{ display:flex; gap:.7rem; align-items:center; font-family:var(--font-accent); font-size:.7rem; color:var(--text-secondary); letter-spacing:.05em; text-transform:uppercase; }
+.news-card h3{ font-family:var(--font-display); font-size:1.05rem; line-height:1.3; text-transform:uppercase; }
+.news-card.featured h3{ font-size:1.5rem; }
+.news-card p{ color:var(--text-secondary); font-size:.86rem; flex:1; }
+.news-read{ font-family:var(--font-accent); font-weight:700; font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--neon-blue); display:inline-flex; align-items:center; gap:.4rem; }
+
+/* ============================================================
+   Achievements
+   ============================================================ */
+.achieve-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
+@media (max-width:860px){ .achieve-grid{ grid-template-columns:repeat(2,1fr); } }
+.achieve-card{ padding:2.1rem 1.4rem; text-align:center; transition:transform .4s var(--ease), border-color .4s ease; }
+.achieve-card:hover{ transform:translateY(-6px); border-color:rgba(139,92,246,0.5); }
+.achieve-icon{ width:52px; height:52px; margin:0 auto 1rem; }
+.achieve-icon svg{ width:100%; height:100%; stroke:var(--neon-blue); fill:none; stroke-width:1.4; filter:drop-shadow(0 0 8px rgba(0,229,255,0.4)); }
+.achieve-num{ font-family:var(--font-display); font-weight:800; font-size:2.3rem; }
+.achieve-num .plus{ color:var(--neon-pink); }
+.achieve-label{ font-family:var(--font-accent); letter-spacing:.08em; text-transform:uppercase; font-size:.76rem; color:var(--text-secondary); margin-top:.5rem; }
+
+/* ============================================================
+   Testimonials
+   ============================================================ */
+.testi-wrap{ max-width:760px; margin:0 auto; position:relative; }
+.testi-track{ overflow:hidden; }
+.testi-slides{ display:flex; transition:transform .6s var(--ease); }
+.testi-slide{ min-width:100%; padding:2.6rem; text-align:center; }
+.testi-quote{ font-family:var(--font-body); font-style:italic; font-size:1.18rem; font-weight:300; color:var(--text-primary); line-height:1.7; }
+.testi-quote::before{ content:'“'; color:var(--neon-blue); }
+.testi-quote::after{ content:'”'; color:var(--neon-blue); }
+.testi-person{ display:flex; align-items:center; justify-content:center; gap:.8rem; margin-top:1.6rem; }
+.testi-person img{ width:50px; height:50px; border-radius:50%; object-fit:cover; border:1px solid rgba(0,229,255,0.4); }
+.testi-person h4{ font-family:var(--font-display); font-size:.92rem; text-transform:uppercase; text-align:left; }
+.testi-person span{ font-size:.78rem; color:var(--text-secondary); text-align:left; display:block; }
+.testi-controls{ display:flex; justify-content:center; gap:1.2rem; align-items:center; margin-top:1.8rem; }
+.testi-arrow{ width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,0.16); display:flex; align-items:center; justify-content:center; transition:.3s; }
+.testi-arrow:hover{ border-color:var(--neon-blue); background:rgba(0,229,255,0.08); }
+.testi-arrow svg{ width:16px; height:16px; }
+.testi-dots{ display:flex; gap:.5rem; }
+.testi-dot{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); transition:.3s; }
+.testi-dot.active{ background:var(--neon-blue); box-shadow:0 0 8px var(--neon-blue); width:22px; border-radius:5px; }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-list{ max-width:760px; margin:0 auto; display:grid; gap:1rem; }
+.faq-item{ overflow:hidden; }
+.faq-q{ width:100%; display:flex; justify-content:space-between; align-items:center; padding:1.3rem 1.5rem; text-align:left; font-family:var(--font-accent); font-weight:600; letter-spacing:.02em; font-size:1rem; }
+.faq-q .plus{ width:22px; height:22px; position:relative; flex-shrink:0; margin-left:1rem; }
+.faq-q .plus::before,.faq-q .plus::after{ content:''; position:absolute; background:var(--neon-blue); transition:transform .35s var(--ease); }
+.faq-q .plus::before{ width:100%; height:2px; top:50%; left:0; transform:translateY(-50%); }
+.faq-q .plus::after{ width:2px; height:100%; left:50%; top:0; transform:translateX(-50%); }
+.faq-item.open .faq-q .plus::after{ transform:translateX(-50%) scaleY(0); }
+.faq-item.open .faq-q{ color:var(--neon-blue); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .4s var(--ease); }
+.faq-a-inner{ padding:0 1.5rem 1.4rem; color:var(--text-secondary); font-size:.92rem; line-height:1.7; }
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:2.6rem; align-items:stretch; }
+@media (max-width:920px){ .contact-wrap{ grid-template-columns:1fr; } }
+.contact-visual{ position:relative; border-radius:18px; overflow:hidden; min-height:380px; }
+.contact-visual img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.contact-visual-overlay{
+  position:absolute; inset:0; background:linear-gradient(160deg, rgba(0,229,255,0.18), rgba(5,8,22,0.85));
+  display:flex; flex-direction:column; justify-content:flex-end; padding:2rem;
+}
+.contact-visual-overlay h3{ font-family:var(--font-display); font-size:1.4rem; text-transform:uppercase; }
+.contact-visual-overlay p{ color:var(--text-secondary); margin-top:.5rem; font-size:.9rem; }
+.social-row{ display:flex; gap:.7rem; margin-top:1.3rem; }
+.social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; transition:.3s; }
+.social-row a:hover{ background:var(--neon-blue); border-color:var(--neon-blue); transform:translateY(-3px); }
+.social-row svg{ width:16px; height:16px; }
+
+.contact-form{ padding:2.2rem; }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media (max-width:560px){ .form-row{ grid-template-columns:1fr; } }
+.field{ position:relative; margin-bottom:1.4rem; }
+.field input, .field textarea{
+  width:100%; padding:.95rem 0 .6rem; border-bottom:1px solid rgba(255,255,255,0.18); font-size:.95rem; color:var(--text-primary);
+  transition:border-color .3s ease;
+}
+.field textarea{ resize:vertical; min-height:90px; }
+.field label{
+  position:absolute; left:0; top:.95rem; color:var(--text-secondary); font-size:.92rem; transition:.25s var(--ease); pointer-events:none;
+}
+.field input:focus, .field textarea:focus{ border-color:var(--neon-blue); }
+.field input:focus ~ label, .field textarea:focus ~ label,
+.field input:not(:placeholder-shown) ~ label, .field textarea:not(:placeholder-shown) ~ label{
+  top:-.6rem; font-size:.72rem; color:var(--neon-blue); letter-spacing:.05em;
+}
+.field .error-msg{ display:none; color:var(--neon-pink); font-size:.74rem; margin-top:.4rem; font-family:var(--font-accent); letter-spacing:.03em; }
+.field.has-error input, .field.has-error textarea{ border-color:var(--neon-pink); }
+.field.has-error .error-msg{ display:block; }
+.form-success{
+  display:none; align-items:center; gap:.7rem; padding:1rem 1.2rem; border-radius:10px;
+  background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.35); color:var(--neon-blue); font-family:var(--font-accent); font-size:.86rem; margin-top:1rem;
+}
+.form-success.show{ display:flex; }
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.site-footer{ background:var(--bg-secondary); padding-top:5rem; position:relative; border-top:1px solid var(--glass-border); }
+.footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr 1.4fr; gap:2.4rem; padding-bottom:3rem; }
+@media (max-width:920px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:560px){ .footer-grid{ grid-template-columns:1fr; } }
+.footer-grid h5{ font-family:var(--font-accent); text-transform:uppercase; letter-spacing:.12em; font-size:.78rem; color:var(--text-primary); margin-bottom:1.2rem; }
+.footer-grid ul{ display:grid; gap:.7rem; }
+.footer-grid a{ color:var(--text-secondary); font-size:.88rem; transition:color .25s ease, padding-left .25s ease; }
+.footer-grid a:hover{ color:var(--neon-blue); padding-left:4px; }
+.footer-brand p{ color:var(--text-secondary); font-size:.9rem; margin:1rem 0 1.4rem; max-width:300px; }
+.newsletter-form{ display:flex; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.16); }
+.newsletter-form input{ flex:1; padding:.8rem 1rem; font-size:.88rem; }
+.newsletter-form button{ padding:.8rem 1.1rem; background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple)); color:#04060f; font-family:var(--font-accent); font-weight:700; letter-spacing:.05em; }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding:1.6rem 0; border-top:1px solid var(--glass-border); flex-wrap:wrap; gap:1rem; }
+.footer-bottom p{ color:var(--text-secondary); font-size:.8rem; }
+.footer-legal{ display:flex; gap:1.4rem; }
+.footer-legal a{ font-size:.8rem; color:var(--text-secondary); }
+.footer-legal a:hover{ color:var(--neon-pink); }
+
+/* ============================================================
+   Back to top
+   ============================================================ */
+.back-top{
+  position:fixed; right:1.6rem; bottom:1.6rem; z-index:500; width:48px; height:48px; border-radius:50%;
+  background:var(--glass-bg); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:translateY(20px); pointer-events:none; transition:.4s var(--ease);
+}
+.back-top.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.back-top:hover{ border-color:var(--neon-blue); box-shadow:0 0 18px rgba(0,229,255,0.4); }
+.back-top svg{ width:18px; height:18px; stroke:var(--neon-blue); }
+
+/* ============================================================
+   RGB border glow animation (applied to feature cards on hover via JS)
+   ============================================================ */
+@keyframes rgbBorder{
+  0%  { box-shadow: 0 0 18px -4px rgba(0,229,255,0.55), 0 0 0 1px rgba(0,229,255,0.35); }
+  33% { box-shadow: 0 0 18px -4px rgba(139,92,246,0.55), 0 0 0 1px rgba(139,92,246,0.35); }
+  66% { box-shadow: 0 0 18px -4px rgba(255,46,136,0.55), 0 0 0 1px rgba(255,46,136,0.35); }
+  100%{ box-shadow: 0 0 18px -4px rgba(0,229,255,0.55), 0 0 0 1px rgba(0,229,255,0.35); }
+}
+.game-card:hover,
+.stream-card:hover{
+  animation: rgbBorder 3s linear infinite;
+}
+
+/* Section neon dividers */
+.neon-divider{
+  width:100%; height:1px; background:linear-gradient(90deg, transparent 0%, var(--neon-blue) 25%, var(--neon-purple) 50%, var(--neon-pink) 75%, transparent 100%);
+  opacity:.28; border:none; margin:0;
+}
+
+/* misc helpers */
+.flex-center{ display:flex; align-items:center; justify-content:center; }
+.mt-cta{ margin-top:3rem; text-align:center; }
+.muted{ color:var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<a href="#home" class="skip-link">Skip to content</a>
+
+<!-- Custom cursor -->
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<!-- Scroll progress -->
+<div class="scroll-hud" id="scrollHud" aria-hidden="true"></div>
+
+<!-- Loading screen -->
+<div class="loader" id="loader" role="status" aria-label="Loading NEXION">
+  <div class="loader-hex">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00E5FF"/>
+          <stop offset="50%" stop-color="#8B5CF6"/>
+          <stop offset="100%" stop-color="#FF2E88"/>
+        </linearGradient>
+      </defs>
+      <polygon class="hex-path" points="50,3 90,25 90,75 50,97 10,75 10,25"/>
+    </svg>
+    <span class="loader-logo">N</span>
+  </div>
+  <div class="loader-text">SYSTEM<span> // </span>NEXION<span> // </span>BOOT</div>
+  <div class="loader-bar-track"><div class="loader-bar-fill" id="loaderFill"></div></div>
+  <div class="loader-pct" id="loaderStatus">Initializing core modules... <b id="loaderPct">0%</b></div>
+</div>
+
+<!-- Header -->
+<header class="site-header" id="siteHeader">
+  <div class="container nav-row">
+    <a href="#home" class="brand cursor-hover">
+      <svg class="brand-mark" viewBox="0 0 100 100"><polygon class="hex" points="50,5 92,28 92,72 50,95 8,72 8,28"/><circle class="core" cx="50" cy="50" r="14"/></svg>
+      NEX<small>ION</small>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#games" class="cursor-hover">Games</a>
+      <a href="#teams" class="cursor-hover">Teams</a>
+      <a href="#tournaments" class="cursor-hover">Tournaments</a>
+      <a href="#products" class="cursor-hover">Shop</a>
+      <a href="#streams" class="cursor-hover">Streams</a>
+      <a href="#news" class="cursor-hover">News</a>
+      <a href="#contact" class="cursor-hover">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-ghost cursor-hover">Join Now</a>
+      <button class="nav-toggle cursor-hover" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="home">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80" alt="Futuristic RGB gaming battle station glowing in the dark" loading="eager">
+    </div>
+    <div class="neon-orbs" aria-hidden="true">
+      <div class="neon-orb"></div>
+      <div class="neon-orb"></div>
+      <div class="neon-orb"></div>
+    </div>
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <div class="hero-floater" aria-hidden="true">
+      <div class="glass floater-chip">
+        <div class="floater-icon" style="background:rgba(0,229,255,0.15);">🎮</div>
+        <div><h5>Live Matches</h5><span>4 ongoing now</span></div>
+      </div>
+      <div class="glass floater-chip">
+        <div class="floater-icon" style="background:rgba(255,46,136,0.15);">🔴</div>
+        <div><h5>18.2K Watching</h5><span>ShadowSniper99</span></div>
+      </div>
+      <div class="glass floater-chip">
+        <div class="floater-icon" style="background:rgba(139,92,246,0.15);">🏆</div>
+        <div><h5>Grand Final</h5><span>SAT · 7:00 PM UTC</span></div>
+      </div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow"><span class="pulse-dot"></span> SEASON 7 — LIVE NOW</div>
+          <h1 class="hero-title">
+            <span class="reveal-line"><span>ENTER THE</span></span>
+            <span class="reveal-line line2"><span class="gradient-text">ARENA.</span></span>
+            <span class="reveal-line line2"><span>BECOME&nbsp;LEGEND.</span></span>
+          </h1>
+          <p class="hero-desc">NEXION is a global esports organization and gaming community — competing across six titles, broadcasting live every night, and building the gear that powers the next generation of champions.</p>
+          <div class="typewriter-wrap" aria-live="polite">
+            <span class="typewriter-prefix">Currently Playing:</span>
+            <span class="typewriter-text" id="typewriter"></span><span class="typewriter-cursor" aria-hidden="true"></span>
+          </div>
+          <div class="hero-actions">
+            <a href="#tournaments" class="btn btn-primary cursor-hover">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Watch Live
+            </a>
+            <a href="#contact" class="btn btn-ghost cursor-hover">Join The Roster</a>
+          </div>
+          <div class="hero-stats">
+            <div class="glass stat-chip">
+              <div class="stat-num" data-count="2.4" data-suffix="M+">0</div>
+              <div class="stat-label">Community Members</div>
+            </div>
+            <div class="glass stat-chip">
+              <div class="stat-num" data-count="187" data-suffix="">0</div>
+              <div class="stat-label">Tournaments Hosted</div>
+            </div>
+            <div class="glass stat-chip">
+              <div class="stat-num" data-count="4.8" data-suffix="M">$0</div>
+              <div class="stat-label">Prize Pool Awarded</div>
+            </div>
+            <div class="glass stat-chip">
+              <div class="stat-num" data-count="32" data-suffix="">0</div>
+              <div class="stat-label">Countries Repped</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+  </section>
+
+  <!-- ============ FEATURED GAMES ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="games">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">Our Roster Of Titles</div>
+        <h2 class="section-title">Featured <span class="accent">Games</span></h2>
+        <p class="section-sub">Six competitive titles. One organization built to dominate every one of them.</p>
+      </div>
+      <div class="games-grid">
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80" alt="Neon-lit tactical shooter game environment" loading="lazy">
+          <span class="tag game-card-genre">Tactical FPS</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.9</span>
+            </div>
+            <h3>Neon Strike</h3>
+            <p>5v5 precision gunplay across a fractured cyber-metropolis.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80" alt="Battle royale game environment with dramatic lighting" loading="lazy">
+          <span class="tag game-card-genre">Battle Royale</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.7</span>
+            </div>
+            <h3>Void Runners</h3>
+            <p>100-player drop into a collapsing orbital ring.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=800&q=80" alt="Dark futuristic strategy game arena lighting" loading="lazy">
+          <span class="tag game-card-genre">MOBA</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.8</span>
+            </div>
+            <h3>Chrono Arena</h3>
+            <p>Time-warping lane combat with five-hero squads.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="RGB gaming PC rig glowing with neon colors" loading="lazy">
+          <span class="tag game-card-genre">Strategy</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.6</span>
+            </div>
+            <h3>Steel Dominion</h3>
+            <p>Base-building warfare across procedural battlefronts.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?auto=format&fit=crop&w=800&q=80" alt="Gaming headset glowing with RGB light in dark room" loading="lazy">
+          <span class="tag game-card-genre">Stealth Action</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.5</span>
+            </div>
+            <h3>Ghost Protocol</h3>
+            <p>Asymmetric infiltration ops in a corporate megacity.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+        <article class="game-card cursor-hover" data-reveal="scale">
+          <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=800&q=80" alt="Dark gaming setup viewed from above with glowing keyboard" loading="lazy">
+          <span class="tag game-card-genre">Racing</span>
+          <div class="game-card-overlay">
+            <div class="game-rating">
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <svg viewBox="0 0 20 20"><path d="M10 1l2.6 6.3L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.7z"/></svg>
+              <span>4.6</span>
+            </div>
+            <h3>Quantum Rift</h3>
+            <p>Anti-gravity circuits through shifting dimensional tracks.</p>
+            <div class="game-card-cta">View Roster <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEAMS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section section--alt" id="teams">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">The Roster</div>
+        <h2 class="section-title">Our <span class="accent">Esports Teams</span></h2>
+        <p class="section-sub">Eight players. Four titles. One standard: first place or it doesn't count.</p>
+      </div>
+      <div class="teams-grid">
+
+        <div class="glass team-card cursor-hover" data-reveal>
+          <div class="team-avatar"><img src="https://images.unsplash.com/photo-1620325867502-221cfb5faa5f?auto=format&fit=crop&w=300&q=80" alt="Professional esports player wearing a headset, focused on screen" loading="lazy"></div>
+          <h3>"Vex" Tanaka</h3>
+          <div class="role">IGL · Entry Fragger</div>
+          <div class="game">Neon Strike — Team Vortex</div>
+          <div class="team-stats">
+            <div><b>1.42</b>K/D</div>
+            <div><b>312</b>Matches</div>
+            <div><b>61%</b>Win Rate</div>
+          </div>
+        </div>
+
+        <div class="glass team-card cursor-hover" data-reveal>
+          <div class="team-avatar"><img src="https://images.unsplash.com/photo-1556438064-2d7646166914?auto=format&fit=crop&w=300&q=80" alt="Professional esports player with gaming headset" loading="lazy"></div>
+          <h3>"Echo" Reyes</h3>
+          <div class="role">Support · Strategist</div>
+          <div class="game">Chrono Arena — Shadow Legion</div>
+          <div class="team-stats">
+            <div><b>0.98</b>K/D</div>
+            <div><b>287</b>Matches</div>
+            <div><b>58%</b>Win Rate</div>
+          </div>
+        </div>
+
+        <div class="glass team-card cursor-hover" data-reveal>
+          <div class="team-avatar"><img src="https://images.unsplash.com/photo-1556655939-bf8e2d8d61cb?auto=format&fit=crop&w=300&q=80" alt="Focused gamer competing on a PC setup" loading="lazy"></div>
+          <h3>"Nyx" Okafor</h3>
+          <div class="role">Sniper · Lurker</div>
+          <div class="game">Neon Strike — Iron Phoenix</div>
+          <div class="team-stats">
+            <div><b>1.65</b>K/D</div>
+            <div><b>349</b>Matches</div>
+            <div><b>64%</b>Win Rate</div>
+          </div>
+        </div>
+
+        <div class="glass team-card cursor-hover" data-reveal>
+          <div class="team-avatar"><img src="https://images.unsplash.com/photo-1612965110667-3a91a8e7c2c5?auto=format&fit=crop&w=300&q=80" alt="Esports player concentrating during competitive match" loading="lazy"></div>
+          <h3>"Glitch" Park</h3>
+          <div class="role">Jungler · Shotcaller</div>
+          <div class="game">Chrono Arena — Neon Wolves</div>
+          <div class="team-stats">
+            <div><b>1.21</b>K/D</div>
+            <div><b>301</b>Matches</div>
+            <div><b>59%</b>Win Rate</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="mt-cta" data-reveal>
+        <a href="#contact" class="btn btn-ghost cursor-hover">View Full Roster</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOURNAMENTS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="tournaments">
+    <div class="container">
+      <div class="tourney-top">
+        <div data-reveal="left">
+          <div class="eyebrow">Season 7 Championship</div>
+          <h2 class="section-title">Live <span class="accent">Tournaments</span></h2>
+        </div>
+        <div class="prize-pool glass" style="padding:1rem 1.6rem;" data-reveal="right">
+          <div class="item"><b>$480K</b><span>Prize Pool</span></div>
+          <div class="item"><b>16</b><span>Teams</span></div>
+          <div class="item"><b>Day 4</b><span>Of 7</span></div>
+        </div>
+      </div>
+
+      <div class="bracket" data-reveal>
+        <div class="bracket-round">
+          <div class="bracket-round-title">Quarterfinals</div>
+          <div class="glass match">
+            <div class="match-team winner"><span>Iron Phoenix</span><span class="score">13</span></div>
+            <div class="match-team"><span>Neon Wolves</span><span class="score">7</span></div>
+          </div>
+          <div class="glass match">
+            <div class="match-team"><span>Team Vortex</span><span class="score">9</span></div>
+            <div class="match-team winner"><span>Shadow Legion</span><span class="score">13</span></div>
+          </div>
+          <div class="glass match">
+            <div class="match-team winner"><span>Static Reign</span><span class="score">13</span></div>
+            <div class="match-team"><span>Glass Cannons</span><span class="score">11</span></div>
+          </div>
+          <div class="glass match">
+            <div class="match-team"><span>Apex Drift</span><span class="score">8</span></div>
+            <div class="match-team winner"><span>Crimson Byte</span><span class="score">13</span></div>
+          </div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-title">Semifinals</div>
+          <div class="glass match">
+            <div class="match-team winner"><span>Iron Phoenix</span><span class="score">2</span></div>
+            <div class="match-team"><span>Shadow Legion</span><span class="score">1</span></div>
+          </div>
+          <div class="glass match">
+            <div class="match-team"><span>Static Reign</span><span class="score">0</span></div>
+            <div class="match-team winner"><span>Crimson Byte</span><span class="score">2</span></div>
+          </div>
+        </div>
+        <div class="bracket-round">
+          <div class="bracket-round-title">Grand Final</div>
+          <div class="glass match">
+            <div class="match-team"><span>Iron Phoenix</span><span class="score">—</span></div>
+            <div class="match-team"><span>Crimson Byte</span><span class="score">—</span></div>
+            <div class="match-meta">SAT · 7:00 PM UTC</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="schedule-list">
+        <div class="glass schedule-item" data-reveal>
+          <div class="schedule-date">JUN 19<small>FRI</small></div>
+          <div class="schedule-match">Iron Phoenix <span>vs</span> Crimson Byte — Grand Final</div>
+          <span class="tag">Neon Strike</span>
+        </div>
+        <div class="glass schedule-item" data-reveal>
+          <div class="schedule-date">JUN 21<small>SUN</small></div>
+          <div class="schedule-match">Team Vortex <span>vs</span> Neon Wolves — 3rd Place</div>
+          <span class="tag">Chrono Arena</span>
+        </div>
+        <div class="glass schedule-item" data-reveal>
+          <div class="schedule-date">JUN 25<small>THU</small></div>
+          <div class="schedule-match">Open Qualifiers Begin — Season 8</div>
+          <span class="tag">All Titles</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section section--alt" id="products">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">NEXION Gear</div>
+        <h2 class="section-title">Gaming <span class="accent">Products</span></h2>
+        <p class="section-sub">Built and tested by our pro roster. Engineered for milliseconds that matter.</p>
+      </div>
+      <div class="products-grid">
+
+        <div class="glass product-card cursor-hover" data-reveal="scale">
+          <span class="tag product-badge new">New</span>
+          <div class="img-frame product-img"><img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=500&q=80" alt="RGB mechanical gaming keyboard glowing in the dark" loading="lazy"></div>
+          <div class="product-cat">Keyboard</div>
+          <h3>Strike MK2 Mechanical</h3>
+          <div class="product-foot">
+            <div class="product-price"><small>$189</small>$149</div>
+            <button class="icon-btn cursor-hover" aria-label="Add Strike MK2 Mechanical to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+          </div>
+        </div>
+
+        <div class="glass product-card cursor-hover" data-reveal="scale">
+          <span class="tag product-badge hot">Best Seller</span>
+          <div class="img-frame product-img"><img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80" alt="High-precision gaming mouse with RGB lighting" loading="lazy"></div>
+          <div class="product-cat">Mouse</div>
+          <h3>Vector Pro Wireless</h3>
+          <div class="product-foot">
+            <div class="product-price">$89</div>
+            <button class="icon-btn cursor-hover" aria-label="Add Vector Pro Wireless to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+          </div>
+        </div>
+
+        <div class="glass product-card cursor-hover" data-reveal="scale">
+          <span class="tag product-badge new">New</span>
+          <div class="img-frame product-img"><img src="https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80" alt="Premium gaming headset with RGB accents on a desk" loading="lazy"></div>
+          <div class="product-cat">Headset</div>
+          <h3>Aether 7.1 Surround</h3>
+          <div class="product-foot">
+            <div class="product-price"><small>$159</small>$119</div>
+            <button class="icon-btn cursor-hover" aria-label="Add Aether 7.1 Surround to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+          </div>
+        </div>
+
+        <div class="glass product-card cursor-hover" data-reveal="scale">
+          <span class="tag product-badge hot">Best Seller</span>
+          <div class="img-frame product-img"><img src="https://images.unsplash.com/photo-1592840062661-a5a7f78e2056?auto=format&fit=crop&w=500&q=80" alt="Modern gaming controller with ergonomic grip" loading="lazy"></div>
+          <div class="product-cat">Controller</div>
+          <h3>Orbit X Controller</h3>
+          <div class="product-foot">
+            <div class="product-price">$79</div>
+            <button class="icon-btn cursor-hover" aria-label="Add Orbit X Controller to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+          </div>
+        </div>
+
+      </div>
+      <div class="mt-cta" data-reveal>
+        <a href="#" class="btn btn-primary cursor-hover">Shop The Full Lineup</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIVE STREAMS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="streams">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">On Air Right Now</div>
+        <h2 class="section-title">Live <span class="accent">Streams</span></h2>
+        <p class="section-sub">Watch our pros scrim, ranked-grind, and break down VODs — every day of the week.</p>
+      </div>
+      <div class="streams-grid">
+
+        <div class="stream-card cursor-hover" data-reveal="scale">
+          <div class="stream-thumb">
+            <img src="https://images.unsplash.com/photo-1612965110667-3a91a8e7c2c5?auto=format&fit=crop&w=600&q=80" alt="Streamer setup with multiple monitors and RGB lighting" loading="lazy">
+            <span class="live-badge"><span class="dot"></span>LIVE</span>
+            <span class="viewer-count">👁 18.2K</span>
+            <div class="stream-play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          </div>
+          <div class="stream-info">
+            <div class="streamer-avatar"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="Streamer avatar"></div>
+            <div>
+              <h4>ShadowSniper99</h4>
+              <p>Neon Strike — Ranked Grind to Diamond</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stream-card cursor-hover" data-reveal="scale">
+          <div class="stream-thumb">
+            <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80" alt="Gaming controller close up under neon light" loading="lazy">
+            <span class="live-badge"><span class="dot"></span>LIVE</span>
+            <span class="viewer-count">👁 9.6K</span>
+            <div class="stream-play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          </div>
+          <div class="stream-info">
+            <div class="streamer-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="Streamer avatar"></div>
+            <div>
+              <h4>PixelQueen</h4>
+              <p>Void Runners — Duo Drops w/ Viewers</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stream-card cursor-hover" data-reveal="scale">
+          <div class="stream-thumb">
+            <img src="https://images.unsplash.com/photo-1574958269340-fa927503f3dd?auto=format&fit=crop&w=600&q=80" alt="Gaming room bathed in purple and blue neon light" loading="lazy">
+            <span class="live-badge"><span class="dot"></span>LIVE</span>
+            <span class="viewer-count">👁 14.8K</span>
+            <div class="stream-play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>
+          </div>
+          <div class="stream-info">
+            <div class="streamer-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Streamer avatar"></div>
+            <div>
+              <h4>VortexKing</h4>
+              <p>Chrono Arena — Pro Scrim VOD Review</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMMUNITY ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section section--alt" id="community">
+    <div class="container">
+      <div class="community-wrap">
+        <div class="glass discord-panel" data-reveal="left">
+          <div class="discord-bar">
+            <div class="server-icon">N</div>
+            <div>
+              <h4>NEXION HQ</h4>
+              <span>🟢 248,532 members online</span>
+            </div>
+          </div>
+          <div class="discord-body">
+            <div class="discord-channels">
+              <div class="group">Text</div>
+              <div class="chan active"># general</div>
+              <div class="chan"># lfg-squads</div>
+              <div class="chan"># clips</div>
+              <div class="group">Voice</div>
+              <div class="chan">🔊 Lobby 1</div>
+              <div class="chan">🔊 Scrim Room</div>
+            </div>
+            <div class="discord-feed">
+              <div class="feed-msg">
+                <div class="av"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt=""></div>
+                <div><b class="t1">Kira_</b><time>9:41 PM</time><p>anyone running Neon Strike ranked rn? need a 5th</p></div>
+              </div>
+              <div class="feed-msg">
+                <div class="av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt=""></div>
+                <div><b class="t2">Dexlin</b><time>9:43 PM</time><p>grand final hype 🔥 Iron Phoenix taking it</p></div>
+              </div>
+              <div class="feed-msg">
+                <div class="av"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt=""></div>
+                <div><b class="t3">Maro</b><time>9:46 PM</time><p>new Strike MK2 keyboard finally shipped, feels insane</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-reveal="right">
+          <div class="eyebrow">Join The Community</div>
+          <h2 class="section-title">Built By <span class="accent">Gamers</span>, For Gamers</h2>
+          <p class="section-sub">Squad up, share clips, and get matched with teammates across every title we play — our Discord never sleeps.</p>
+          <div class="avatar-stack">
+            <div class="av"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt=""></div>
+            <div class="av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt=""></div>
+            <div class="av"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt=""></div>
+            <div class="av"><img src="https://images.unsplash.com/photo-1542729110-91c2c4c4a5a2?auto=format&fit=crop&w=80&q=80" alt=""></div>
+            <div class="more">12K+</div>
+          </div>
+          <div class="community-stats">
+            <div class="glass"><b>248K</b><span>Online Now</span></div>
+            <div class="glass"><b>2.4M</b><span>Total Members</span></div>
+          </div>
+          <div class="mt-cta" style="text-align:left; margin-top:1.8rem;">
+            <a href="#" class="btn btn-primary cursor-hover">Join Our Discord</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NEWS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="news">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">From The Newsroom</div>
+        <h2 class="section-title">Gaming <span class="accent">News</span></h2>
+        <p class="section-sub">Roster moves, patch breakdowns, and everything happening across the NEXION universe.</p>
+      </div>
+      <div class="news-grid">
+
+        <article class="glass news-card featured cursor-hover" data-reveal>
+          <div class="img-frame"><img src="https://images.unsplash.com/photo-1580327344181-c1163234e5a0?auto=format&fit=crop&w=900&q=80" alt="Esports tournament stage with large screen and crowd lighting" loading="lazy"></div>
+          <div class="news-body">
+            <div class="news-meta"><span class="tag">Tournaments</span><span>Jun 16, 2026 · 6 min read</span></div>
+            <h3>Season 7 Grand Final Bracket Locked: Iron Phoenix vs. Crimson Byte</h3>
+            <p>Both squads enter Saturday's final undefeated in the playoffs — here's how each team built their road to the title match.</p>
+            <a href="#" class="news-read">Read Story <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="glass news-card cursor-hover" data-reveal>
+          <div class="img-frame"><img src="https://images.unsplash.com/photo-1556655939-bf8e2d8d61cb?auto=format&fit=crop&w=600&q=80" alt="Esports player in team jersey at gaming desk" loading="lazy"></div>
+          <div class="news-body">
+            <div class="news-meta"><span class="tag">Roster</span><span>Jun 12</span></div>
+            <h3>NEXION Signs "Nyx" Okafor to Iron Phoenix</h3>
+            <p>The former Static Reign sniper joins ahead of the playoff run.</p>
+            <a href="#" class="news-read">Read Story <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="glass news-card cursor-hover" data-reveal>
+          <div class="img-frame"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Gaming setup with RGB keyboard glowing for patch notes article" loading="lazy"></div>
+          <div class="news-body">
+            <div class="news-meta"><span class="tag">Patch Notes</span><span>Jun 9</span></div>
+            <h3>Neon Strike 4.12 — Major Rifle Rebalance</h3>
+            <p>A full breakdown of the changes shaking up the competitive meta.</p>
+            <a href="#" class="news-read">Read Story <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="glass news-card cursor-hover" data-reveal>
+          <div class="img-frame"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Dark futuristic esports training facility interior" loading="lazy"></div>
+          <div class="news-body">
+            <div class="news-meta"><span class="tag">Org News</span><span>Jun 4</span></div>
+            <h3>Inside Our New 12,000 sq ft Training Facility</h3>
+            <p>A first look at where our six rosters train year-round.</p>
+            <a href="#" class="news-read">Read Story <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="glass news-card cursor-hover" data-reveal>
+          <div class="img-frame"><img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=600&q=80" alt="Mechanical keyboard close up for product launch article" loading="lazy"></div>
+          <div class="news-body">
+            <div class="news-meta"><span class="tag">Gear</span><span>May 30</span></div>
+            <h3>Strike MK2 Keyboard Sells Out in 11 Minutes</h3>
+            <p>Our pro-tuned switches are already back-ordered for July.</p>
+            <a href="#" class="news-read">Read Story <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ACHIEVEMENTS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section section--alt" id="achievements">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">By The Numbers</div>
+        <h2 class="section-title">Milestones &amp; <span class="accent">Achievements</span></h2>
+      </div>
+      <div class="achieve-grid">
+        <div class="glass achieve-card" data-reveal="scale">
+          <div class="achieve-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+          <div class="achieve-num" data-count="187" data-suffix="">0</div>
+          <div class="achieve-label">Tournaments Hosted</div>
+        </div>
+        <div class="glass achieve-card" data-reveal="scale">
+          <div class="achieve-icon"><svg viewBox="0 0 24 24"><path d="M12 15a5 5 0 0 0 5-5V5a5 5 0 0 0-10 0v5a5 5 0 0 0 5 5zM5 10a7 7 0 0 0 14 0M12 19v3"/></svg></div>
+          <div class="achieve-num" data-count="42" data-suffix="">0</div>
+          <div class="achieve-label">Championship Titles</div>
+        </div>
+        <div class="glass achieve-card" data-reveal="scale">
+          <div class="achieve-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 9 4-18 3 9h4"/></svg></div>
+          <div class="achieve-num" data-prefix="$" data-count="4.8" data-suffix="M">$0</div>
+          <div class="achieve-label">Prize Pool Awarded</div>
+        </div>
+        <div class="glass achieve-card" data-reveal="scale">
+          <div class="achieve-icon"><svg viewBox="0 0 24 24"><path d="M2 12h3l3-7 4 14 4-14 3 7h3"/></svg></div>
+          <div class="achieve-num" data-count="2.4" data-suffix="M">0</div>
+          <div class="achieve-label">Community Members</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">Community Voices</div>
+        <h2 class="section-title">What Gamers <span class="accent">Are Saying</span></h2>
+      </div>
+      <div class="testi-wrap glass" data-reveal>
+        <div class="testi-track">
+          <div class="testi-slides" id="testiSlides">
+            <div class="testi-slide">
+              <p class="testi-quote">NEXION's Discord got me from solo-queue chaos to a five-stack that actually communicates. Climbed three ranks in a season.</p>
+              <div class="testi-person">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="">
+                <div><h4>Kira Nolan</h4><span>Neon Strike — Diamond II</span></div>
+              </div>
+            </div>
+            <div class="testi-slide">
+              <p class="testi-quote">The Strike MK2 keyboard genuinely lowered my reaction time. Switched my whole scrim team over to NEXION gear.</p>
+              <div class="testi-person">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="">
+                <div><h4>Dexlin Cho</h4><span>Amateur Team Captain</span></div>
+              </div>
+            </div>
+            <div class="testi-slide">
+              <p class="testi-quote">I've watched every NEXION tournament broadcast since Season 3. The production quality rivals anything on the major circuit.</p>
+              <div class="testi-person">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="">
+                <div><h4>Maro Whitfield</h4><span>Community Member, 4 Years</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-controls">
+          <button class="testi-arrow cursor-hover" id="testiPrev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div class="testi-dots" id="testiDots"></div>
+          <button class="testi-arrow cursor-hover" id="testiNext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section section--alt" id="faq">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">Need Help</div>
+        <h2 class="section-title">Frequently Asked <span class="accent">Questions</span></h2>
+      </div>
+      <div class="faq-list" data-reveal>
+        <div class="glass faq-item">
+          <button class="faq-q" aria-expanded="false">How do I join the NEXION community? <span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Join our Discord server through the link in the Community section — membership is free and open to anyone. From there you can join LFG channels, scrim groups, and tournament sign-up threads.</div></div>
+        </div>
+        <div class="glass faq-item">
+          <button class="faq-q" aria-expanded="false">Can amateur teams compete in NEXION tournaments? <span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Yes. Every season opens with public qualifiers across all six titles before the invite-only championship bracket. Sign-ups go live on our Tournaments page roughly two weeks before each qualifier window.</div></div>
+        </div>
+        <div class="glass faq-item">
+          <button class="faq-q" aria-expanded="false">What's your shipping policy on gaming products? <span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Standard orders ship within 2–3 business days, with tracked delivery in 5–9 days domestically and 10–18 days internationally. All peripherals include a 2-year warranty against manufacturing defects.</div></div>
+        </div>
+        <div class="glass faq-item">
+          <button class="faq-q" aria-expanded="false">How can I apply for a streaming partnership? <span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">We review partner applications quarterly. Send your channel stats and recent VODs through the Contact form below, and our content team will follow up within 10 business days.</div></div>
+        </div>
+        <div class="glass faq-item">
+          <button class="faq-q" aria-expanded="false">Do you offer sponsorships for individual players? <span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Occasionally, for standout talent identified through our open qualifiers or scouting network. There's no direct application path for individual sponsorship — strong qualifier results are the fastest way to get noticed.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <hr class="neon-divider" aria-hidden="true">
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow">Let's Talk</div>
+        <h2 class="section-title">Get In <span class="accent">Touch</span></h2>
+        <p class="section-sub">Questions about partnerships, tryouts, or gear? Our team replies within two business days.</p>
+      </div>
+      <div class="contact-wrap">
+        <div class="contact-visual" data-reveal="left">
+          <img src="https://images.unsplash.com/photo-1593118247619-e2d6f056869e?auto=format&fit=crop&w=800&q=80" alt="Gaming desk setup with controller and RGB ambient lighting">
+          <div class="contact-visual-overlay">
+            <h3>NEXION HQ</h3>
+            <p>Open for partnerships, tryouts, press &amp; gear inquiries — every day, 9AM–9PM UTC.</p>
+            <div class="social-row">
+              <a href="#" class="cursor-hover" aria-label="NEXION on Twitter / X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-7-6.2 7H1.3l8.1-9.3L1 2h7l4.9 6.4z"/></svg></a>
+              <a href="#" class="cursor-hover" aria-label="NEXION on Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6.5a17 17 0 0 0-4.3-1.3l-.2.5a13 13 0 0 1 3.8 1.9 14.6 14.6 0 0 0-15-.1 12 12 0 0 1 3.8-2l-.2-.4A17 17 0 0 0 4 6.5C2.2 10 1.6 13.5 1.9 17a17.4 17.4 0 0 0 4.9 2.5l.7-1.2a10 10 0 0 1-1.7-.8l.4-.3a13 13 0 0 0 11.6 0l.4.3c-.5.3-1.1.6-1.7.8l.7 1.2A17.4 17.4 0 0 0 22 17c.4-4-.4-7.5-2-10.5zM9 14.3c-.8 0-1.5-.8-1.5-1.7S8.2 11 9 11s1.5.7 1.5 1.6-.7 1.7-1.5 1.7zm6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.6 1.5-1.6 1.5.7 1.5 1.6-.7 1.7-1.5 1.7z"/></svg></a>
+              <a href="#" class="cursor-hover" aria-label="NEXION on YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3.4-.4-5c-.3-.9-1-1.6-1.9-1.9C18 4.7 12 4.7 12 4.7s-6 0-7.7.4c-.9.3-1.6 1-1.9 1.9C2 8.6 2 12 2 12s0 3.4.4 5c.3.9 1 1.6 1.9 1.9 1.7.4 7.7.4 7.7.4s6 0 7.7-.4c.9-.3 1.6-1 1.9-1.9.4-1.6.4-5 .4-5zM10 15.5v-7l6 3.5z"/></svg></a>
+              <a href="#" class="cursor-hover" aria-label="NEXION on Twitch"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 2 2.5 5.5v14H7V22l3-2.5h4L20 14V2zm14 11-3 3h-4l-2.5 2.5V16H5.5V4.5H18z"/><path d="M14.5 6.5h2V11h-2zM9.5 6.5h2V11h-2z" fill="#050816"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <form class="glass contact-form" id="contactForm" data-reveal="right" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <input type="text" id="cName" placeholder=" " autocomplete="name">
+              <label for="cName">Full Name</label>
+              <span class="error-msg">Please enter your name.</span>
+            </div>
+            <div class="field">
+              <input type="email" id="cEmail" placeholder=" " autocomplete="email">
+              <label for="cEmail">Email Address</label>
+              <span class="error-msg">Please enter a valid email.</span>
+            </div>
+          </div>
+          <div class="field">
+            <input type="text" id="cSubject" placeholder=" ">
+            <label for="cSubject">Subject</label>
+            <span class="error-msg">Please enter a subject.</span>
+          </div>
+          <div class="field">
+            <textarea id="cMessage" placeholder=" " rows="4"></textarea>
+            <label for="cMessage">Your Message</label>
+            <span class="error-msg">Message must be at least 10 characters.</span>
+          </div>
+          <button type="submit" class="btn btn-primary cursor-hover" style="width:100%; justify-content:center;">Send Message</button>
+          <div class="form-success" id="formSuccess">✓ Message sent — our team will reply within 2 business days.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="brand cursor-hover">
+          <svg class="brand-mark" viewBox="0 0 100 100"><polygon class="hex" points="50,5 92,28 92,72 50,95 8,72 8,28"/><circle class="core" cx="50" cy="50" r="14"/></svg>
+          NEX<small>ION</small>
+        </a>
+        <p>A global esports organization and gaming community competing across six titles — built by gamers, for gamers.</p>
+        <div class="social-row">
+          <a href="#" class="cursor-hover" aria-label="NEXION on Twitter / X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-7-6.2 7H1.3l8.1-9.3L1 2h7l4.9 6.4z"/></svg></a>
+          <a href="#" class="cursor-hover" aria-label="NEXION on Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6.5a17 17 0 0 0-4.3-1.3l-.2.5a13 13 0 0 1 3.8 1.9 14.6 14.6 0 0 0-15-.1 12 12 0 0 1 3.8-2l-.2-.4A17 17 0 0 0 4 6.5C2.2 10 1.6 13.5 1.9 17a17.4 17.4 0 0 0 4.9 2.5l.7-1.2a10 10 0 0 1-1.7-.8l.4-.3a13 13 0 0 0 11.6 0l.4.3c-.5.3-1.1.6-1.7.8l.7 1.2A17.4 17.4 0 0 0 22 17c.4-4-.4-7.5-2-10.5zM9 14.3c-.8 0-1.5-.8-1.5-1.7S8.2 11 9 11s1.5.7 1.5 1.6-.7 1.7-1.5 1.7zm6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.6 1.5-1.6 1.5.7 1.5 1.6-.7 1.7-1.5 1.7z"/></svg></a>
+          <a href="#" class="cursor-hover" aria-label="NEXION on YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3.4-.4-5c-.3-.9-1-1.6-1.9-1.9C18 4.7 12 4.7 12 4.7s-6 0-7.7.4c-.9.3-1.6 1-1.9 1.9C2 8.6 2 12 2 12s0 3.4.4 5c.3.9 1 1.6 1.9 1.9 1.7.4 7.7.4 7.7.4s6 0 7.7-.4c.9-.3 1.6-1 1.9-1.9.4-1.6.4-5 .4-5zM10 15.5v-7l6 3.5z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="#games">Featured Games</a></li>
+          <li><a href="#teams">Esports Teams</a></li>
+          <li><a href="#tournaments">Tournaments</a></li>
+          <li><a href="#products">Shop Gear</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Community</h5>
+        <ul>
+          <li><a href="#streams">Live Streams</a></li>
+          <li><a href="#community">Discord</a></li>
+          <li><a href="#news">News</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Stay Updated</h5>
+        <p style="color:var(--text-secondary); font-size:.88rem; margin-bottom:1rem;">Tournament alerts and gear drops, straight to your inbox.</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" placeholder="Email address" required aria-label="Email address">
+          <button type="submit" class="cursor-hover">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 NEXION Esports. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top cursor-hover" id="backTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+/* ============================================================
+   Loading screen
+   ============================================================ */
+(function(){
+  const fill = document.getElementById('loaderFill');
+  const pct = document.getElementById('loaderPct');
+  const status = document.getElementById('loaderStatus');
+  const loader = document.getElementById('loader');
+  const statuses = ['Initializing core modules...','Calibrating neural uplink...','Loading arena assets...','Syncing tournament data...','Establishing connection...','Ready.'];
+  let p = 0;
+  const interval = setInterval(()=>{
+    p += Math.random()*16 + 6;
+    if(p >= 100){ p = 100; clearInterval(interval); }
+    fill.style.width = p + '%';
+    pct.textContent = Math.floor(p) + '%';
+    const idx = Math.min(statuses.length-1, Math.floor((p/100)*(statuses.length-1)));
+    status.firstChild ? status.childNodes[0].textContent = statuses[idx] + ' ' : null;
+    if(p >= 100){
+      setTimeout(()=>{ loader.classList.add('is-done'); document.body.style.overflow=''; },350);
+    }
+  }, 80);
+  document.body.style.overflow = 'hidden';
+  setTimeout(()=>{ document.body.style.overflow=''; }, 1500);
+})();
+
+/* ============================================================
+   Custom cursor
+   ============================================================ */
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0, rx=0, ry=0;
+  window.addEventListener('mousemove', e=>{
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  });
+  function loop(){
+    rx += (mx-rx)*0.16; ry += (my-ry)*0.16;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  }
+  loop();
+  document.querySelectorAll('a, button, .cursor-hover, input, textarea').forEach(el=>{
+    el.addEventListener('mouseenter', ()=> ring.classList.add('is-hover'));
+    el.addEventListener('mouseleave', ()=> ring.classList.remove('is-hover'));
+  });
+})();
+
+/* ============================================================
+   Scroll progress + header state + back to top
+   ============================================================ */
+(function(){
+  const hud = document.getElementById('scrollHud');
+  const header = document.getElementById('siteHeader');
+  const backTop = document.getElementById('backTop');
+  function onScroll(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    hud.style.width = scrolled + '%';
+    header.classList.toggle('scrolled', h.scrollTop > 40);
+    backTop.classList.toggle('show', h.scrollTop > 600);
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+})();
+
+/* ============================================================
+   Mobile nav toggle
+   ============================================================ */
+(function(){
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', ()=>{
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=>{
+    links.classList.remove('open'); toggle.setAttribute('aria-expanded', false);
+  }));
+})();
+
+/* ============================================================
+   Scroll reveal (IntersectionObserver)
+   ============================================================ */
+(function(){
+  const items = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
+  items.forEach(el=> io.observe(el));
+})();
+
+/* ============================================================
+   Animated counters
+   ============================================================ */
+(function(){
+  const counters = document.querySelectorAll('[data-count]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      io.unobserve(entry.target);
+      const el = entry.target;
+      const target = parseFloat(el.getAttribute('data-count'));
+      const suffix = el.getAttribute('data-suffix') || '';
+      const prefix = el.getAttribute('data-prefix') || (el.textContent.trim().startsWith('$') ? '$' : '');
+      const isDecimal = String(target).includes('.');
+      const dur = 1600;
+      const start = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now-start)/dur);
+        const eased = 1 - Math.pow(1-t, 3);
+        const val = target * eased;
+        el.textContent = prefix + (isDecimal ? val.toFixed(1) : Math.floor(val)) + suffix;
+        if(t < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + (isDecimal ? target.toFixed(1) : target) + suffix;
+      }
+      requestAnimationFrame(tick);
+    });
+  }, {threshold:0.4});
+  counters.forEach(el=> io.observe(el));
+})();
+
+/* ============================================================
+   FAQ accordion
+   ============================================================ */
+(function(){
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const btn = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    btn.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{
+        if(o!==item){ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight = null; o.querySelector('.faq-q').setAttribute('aria-expanded','false'); }
+      });
+      item.classList.toggle('open', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      a.style.maxHeight = !isOpen ? a.scrollHeight + 'px' : null;
+    });
+  });
+})();
+
+/* ============================================================
+   Testimonial carousel
+   ============================================================ */
+(function(){
+  const track = document.getElementById('testiSlides');
+  const slides = track.children;
+  const dotsWrap = document.getElementById('testiDots');
+  let idx = 0;
+  for(let i=0;i<slides.length;i++){
+    const d = document.createElement('button');
+    d.className = 'testi-dot' + (i===0?' active':'');
+    d.setAttribute('aria-label', 'Go to testimonial '+(i+1));
+    d.addEventListener('click', ()=> go(i));
+    dotsWrap.appendChild(d);
+  }
+  function go(i){
+    idx = (i+slides.length)%slides.length;
+    track.style.transform = `translateX(-${idx*100}%)`;
+    [...dotsWrap.children].forEach((d,j)=> d.classList.toggle('active', j===idx));
+  }
+  document.getElementById('testiPrev').addEventListener('click', ()=> go(idx-1));
+  document.getElementById('testiNext').addEventListener('click', ()=> go(idx+1));
+  let auto = setInterval(()=> go(idx+1), 6000);
+  track.closest('.testi-wrap').addEventListener('mouseenter', ()=> clearInterval(auto));
+  track.closest('.testi-wrap').addEventListener('mouseleave', ()=> auto = setInterval(()=> go(idx+1), 6000));
+})();
+
+/* ============================================================
+   Contact form validation
+   ============================================================ */
+(function(){
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    let valid = true;
+    const name = document.getElementById('cName');
+    const email = document.getElementById('cEmail');
+    const subject = document.getElementById('cSubject');
+    const message = document.getElementById('cMessage');
+    function check(input, ok){
+      const field = input.closest('.field');
+      field.classList.toggle('has-error', !ok);
+      if(!ok) valid = false;
+    }
+    check(name, name.value.trim().length > 1);
+    check(email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
+    check(subject, subject.value.trim().length > 1);
+    check(message, message.value.trim().length >= 10);
+    if(valid){
+      success.classList.add('show');
+      form.reset();
+      setTimeout(()=> success.classList.remove('show'), 5000);
+    } else {
+      success.classList.remove('show');
+    }
+  });
+
+  const nl = document.getElementById('newsletterForm');
+  nl.addEventListener('submit', e=>{
+    e.preventDefault();
+    const btn = nl.querySelector('button');
+    const original = btn.textContent;
+    btn.textContent = 'Subscribed ✓';
+    nl.querySelector('input').value = '';
+    setTimeout(()=> btn.textContent = original, 2500);
+  });
+})();
+
+/* ============================================================
+   Image fallback (graceful degrade if an Unsplash asset 404s)
+   ============================================================ */
+(function(){
+  document.querySelectorAll('img').forEach(img=>{
+    img.addEventListener('error', ()=>{ img.style.opacity = '0'; }, {once:true});
+  });
+})();
+
+/* ============================================================
+   Particle network background (hero canvas)
+   ============================================================ */
+(function(){
+  const canvas = document.getElementById('particles');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,particles;
+  const COUNT = 40;
+  const LINK_DIST_SQ = 120*120;
+  const colors = ['#00E5FF','#8B5CF6','#FF2E88'];
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  function init(){
+    particles = Array.from({length:COUNT}, ()=> ({
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
+      r: Math.random()*1.6 + 0.6,
+      c: colors[Math.floor(Math.random()*colors.length)]
+    }));
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0 || p.x > w) p.vx *= -1;
+      if(p.y < 0 || p.y > h) p.vy *= -1;
+    });
+    ctx.lineWidth = 1;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const a = particles[i], b = particles[j];
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const distSq = dx*dx+dy*dy;
+        if(distSq < LINK_DIST_SQ){
+          ctx.strokeStyle = `rgba(0,229,255,${(1-Math.sqrt(distSq)/120)*0.12})`;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    ctx.shadowBlur = 0;
+    particles.forEach(p=>{
+      ctx.beginPath();
+      ctx.fillStyle = p.c;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(step);
+  }
+  window.addEventListener('resize', resize);
+  resize(); init(); step();
+})();
+
+/* ============================================================
+   Typewriter effect
+   ============================================================ */
+(function(){
+  const el = document.getElementById('typewriter');
+  if(!el) return;
+  const words = ['Neon Strike', 'Void Runners', 'Chrono Arena', 'Steel Dominion', 'Ghost Protocol', 'Quantum Rift'];
+  let wi=0, ci=0, deleting=false, delay=120;
+  function tick(){
+    const word = words[wi];
+    if(!deleting){
+      el.textContent = word.substring(0, ci+1);
+      ci++;
+      if(ci === word.length){ deleting=true; delay=2000; }
+      else delay = 90 + Math.random()*40;
+    } else {
+      el.textContent = word.substring(0, ci-1);
+      ci--;
+      if(ci === 0){ deleting=false; wi=(wi+1)%words.length; delay=320; }
+      else delay=55;
+    }
+    setTimeout(tick, delay);
+  }
+  setTimeout(tick, 1800);
+})();
+
+/* ============================================================
+   Subtle hero parallax on mouse move
+   ============================================================ */
+(function(){
+  const heroBg = document.querySelector('.hero-bg img');
+  const heroSection = document.querySelector('.hero');
+  if(!heroBg || !heroSection) return;
+  let rafPending = false;
+  heroSection.addEventListener('mousemove', e=>{
+    if(rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(()=>{
+      const rect = heroSection.getBoundingClientRect();
+      const cx = (e.clientX - rect.left)/rect.width - 0.5;
+      const cy = (e.clientY - rect.top)/rect.height - 0.5;
+      heroBg.style.transform = `scale(1.08) translate(${cx*-14}px, ${cy*-14}px)`;
+      rafPending = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>
